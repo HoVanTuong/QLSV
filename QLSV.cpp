@@ -1,355 +1,330 @@
-#include <iostream>
-#include <iomanip>
-#include <cstring>
-#include <algorithm>
-
+#include <bits/stdc++.h>
+#include<conio.h>
 int dem=0;
 using namespace std;
 
-struct sinhvien
+struct Student
 {
-    int mssv;
-    char ten[30];
-    char gioitinh[10];
+    string name, id;
+    double gpa;
     float diem1;
     float diem2;
     float diem3;
-
-    void Nhap()
-    {
-        cout <<"Nhap ma so sinh vien: ";
-        cin >>mssv;
-        cout <<"Nhap ho ten sinh vien: ";
-        fflush(stdin);
-        gets(ten);
-        cout <<"Nhap gioi tinh: ";
-        fflush(stdin);
-        gets(gioitinh);
-        do
-        {
-            cout <<"Nhap diem Cau Truc Du Lieu: ";
-            cin >>diem1;
-            cout <<"Nhap diem Giai Tich: ";
-            cin >>diem2;
-            cout <<"Nhap diem Tin Hieu He Thong: ";
-            cin >>diem3;
-            if(diem1<0||diem2<0||diem3<0||diem1>10||diem2>10||diem3>10)
-                cout <<"Moi ban nhap lai!"<<endl;
-        }while(diem1<0||diem2<0||diem3<0||diem1>10||diem2>10||diem3>10);
-    }
-
-    float DiemTB()
-    {
-        return (diem1+diem2+diem3)/3;
-    }
-
-    string HocLuc()
-    {
-        string hl;
-        if(DiemTB()>=9)
-            hl = "Xuat sac";
-        else if(DiemTB()>=8)
-            hl = "Gioi";
-        else if(DiemTB()>=6.5)
-            hl = "Kha";
-        else if(DiemTB()>=5)
-            hl = "Trung binh";
-        else hl = "Yeu";
-        return hl;
-    }
-    void Xuat()
-    {
-        cout <<setw(2)<<++dem<<setw(8)<<mssv<<setw(12)<<ten<<setw(10)<<gioitinh<<setw(12)<<diem1;
-        cout<<setw(12)<<diem2<<setw(12)<<diem3<<setw(12)<<DiemTB()<<setw(12)<<HocLuc()<<endl;
-    }
+    char xeploai;
 };
-
-typedef sinhvien SV;
-
-void NhapSV(SV sv[], int n)
+struct SV // khai bao node
 {
-    for(int i=0;i<n;i++)
+    Student s;
+    SV *next; // tham chieu den sinh vien tiep theo
+};
+typedef struct SV* sv;// khai bao node de don gian hon khi cap phat dong
+
+// cap phat dong mot node moi voi du lieu la so nguyen x
+sv makeNode()
+{
+	//luu id voi ten vao truoc, vi neu dua vo ham lap for thi se bi lap( neu TH toan ly hoa thoa dieu kien do-while)
+    Student s;
+    cout <<"Nhap thong tin sinh vien: \n";
+    cout <<"Nhap ID: "; cin >> s.id;
+    cout <<"Nhap Ten: "; cin.ignore();
+    getline(cin, s.name);
+    cout<<"Nhan nut bat ki de tiep tuc hoan thanh thong tin sinh vien!"<<endl;
+    char h= getch();
+    system("cls");
+    do{
+	system("cls");
+    cout <<"NHAP DIEM SINH VIEN\n";
+    cout <<"Nhap diem Toan (0-10): "; cin>>s.diem1;
+    cout <<"Nhap diem Ly (0-10): "; cin>>s.diem2;
+    cout <<"Nhap diem Hoa (0-10): "; cin>>s.diem3;
+    s.gpa=((s.diem1+s.diem2+s.diem3)/3)*4/10;
+	cout<<"Diem gpa:"<<s.gpa<<endl;
+	}
+	while(s.diem1>10||s.diem2>10||s.diem3>10||s.diem1<0||s.diem2<0||s.diem3<0);
+	if(s.gpa>=3.6){
+		cout<<"Xep loai: Xuat sac!!!\n";
+		cout<<"Luu thong tin sinh vien thanh cong!!!"<<endl;
+	}else if(s.gpa >= 3.2){
+		cout<<"Xep loai: Gioi!!!\n";
+		cout<<"Luu thong tin sinh vien thanh cong!!!"<<endl;
+	} else if(s.gpa>=2.5){
+		cout<<"Xep loai: Kha!!!\n";
+		cout<<"Luu thong tin sinh vien thanh cong!!!"<<endl;
+	} else if(s.gpa>=2){
+		cout<<"Xep loai: Trung binh!!!\n";
+		cout<<"Luu thong tin sinh vien thanh cong!!!"<<endl;
+	}else if(s.gpa>=1){
+		cout<<"Xep loai: Yeu!!!\n";
+		cout<<"Luu thong tin sinh vien thanh cong!!!"<<endl;
+	}else{
+		cout<<"Xep loai: Kem!!!\n";
+		cout<<"Luu thong tin sinh vien thanh cong!!!"<<endl;
+	}
+    sv tmp = new SV();
+    tmp -> s = s;
+    tmp -> next = NULL;
+    return tmp;
+}
+// kiem tra rong
+bool empty(sv a)
+{
+    return a == NULL;
+}
+// kiem tra danh sach co bao nhieu phan tu
+int Size(sv a)
+{
+  int cnt = 0;
+  while(a!=NULL)
+  {
+    ++cnt;
+    a = a->next;// gan dia chi cua node tiep theo cho node hien tai
+    // cho node hien tai tro toi node tiep theo
+  }
+  return cnt;
+}
+// them mot sinh vien vao dau danh sach lien ket
+void addHead(sv &a) //dung tham chieu de thay doi gia tri cua node dau tien khi addHead thay doi
+{
+   sv tmp = makeNode();
+   if(a== NULL)
+   {
+    a=tmp;
+   }
+   else
+   {
+    tmp->next = a;// theo thu tu, neu lam nguoc lai thi se mat lien ket voi cac sinh vien dung sau trong list
+    a= tmp;
+   }
+}
+//them sinh vien vao cuoi 
+void addLast(sv &a)
+{
+    sv tmp = makeNode();
+    if (a==NULL)
     {
-        cout <<"Nhap thong tin sinh vien thu "<<i+1<<": "<<endl;
-        sv[i].Nhap();
+        a= tmp;
     }
-}
-
-void TieuDe()
-{
-    cout<<setw(3)<<"STT"<<setw(8)<<"MSSV"<<setw(12)<<"Ho Ten"<<setw(12)<<"Gioi Tinh"<<setw(12)<<"Diem 1";
-    cout <<setw(12)<<"Diem 2"<<setw(12)<<"Diem 3"<<setw(12)<<"Diem TB"<<setw(12)<<"Hoc luc"<<endl;
-}
-
-void XuatSV(SV *sv, int n)
-{
-    cout <<"Danh sach sinh vien: "<<endl;
-    TieuDe();
-    for(int i=0;i<n;i++)
+    else
     {
-        sv[i].Xuat();
-    }
-}
-
-// ham them 1 sinh vien
-void ThemSV(SV sv[], int &n)
-{
-   int dem = 0;
-    n++;
-    cout <<"Nhap thong tin sinh vien can them: "<<endl;
-    sv[n-1].Nhap();
-}
-// ham xoa 1 sinh vien
-void XoaSV(SV *sv, int &n)
-{
-    int so;
-    int dem = 0;
-    cout <<"Nhap ma so sinh vien cua sinh vien can xoa: ";
-    cin >>so;
-    for(int i=0; i<n;i++)
-    {
-        if(sv[i].mssv == so)
+        sv p = a;
+        while(p->next!=NULL)
         {
-           for(int j=i;j<n;j++)
-                sv[j] = sv[j+1];
-            dem++;
+            p=p->next;
         }
-    }
-    if(dem == 0)
-        cout <<"Ban da nhap ma so sinh vien sai!"<<endl;
-    else n--;
-}
-
-// ham cap nhat thong tin sinh vien
-
-void CapNhat(SV *sv, int n)
-{
-    int so;
-    int res = 0;
-    cout <<"Nhap ma so sinh vien cua sinh vien can cap nhat: ";
-    cin >>so;
-    for(int i=0; i<n;i++)
-    {
-        if(sv[i].mssv == so)
-        {
-           sv[i].Nhap();
-           res++;
-        }
-    }
-    if(res == 0)
-        cout <<"Ban da nhap ma so sinh vien sai!"<<endl;
-}
-
-// ham tra ve diem cao nhat
-
-float Max(SV *sv, int n)
-{
-    float max = sv[0].DiemTB();
-    for(int i=1;i<n;i++)
-    {
-        if(sv[i].DiemTB() >max)
-        {
-            max = sv[i].DiemTB();
-        }
-    }
-    return max;
-}
-// ham in ra sinh vien co diem trung binh cao nhat
-void InMax(SV *sv, int n)
-{
-    dem = 0;
-    cout <<"Thong tin nhung sinh vien co diem cao nhat: "<<endl;
-    TieuDe();
-    for(int i=0;i<n;i++)
-    {
-        if(sv[i].DiemTB() == Max(sv, n) )
-        {
-            sv[i].Xuat();
-        }
+        p->next = tmp;
     }
 }
-// ham tra ve diem min
-float Min(SV *sv, int n)
+// them 1 sinh vien vao giua
+void addMid(sv &a, int pos)
 {
-    float min = sv[0].DiemTB();
-    for(int i=1;i<n;i++)
+    int n = Size(a);
+    if(pos<=0 || pos > pos + 1)
     {
-        if(sv[i].DiemTB() <min)
-        {
-            min= sv[i].DiemTB();
-        }
+        cout <<"Vi tri chen khong hop le! \n";
     }
-    return min;
-}
-
-// ham in ra sinh vien co diem trung binh thap nhat
-void InMin(SV *sv, int n)
-{
-    dem = 0;
-    cout <<"Thong tin nhung sinh vien co diem thap nhat: "<<endl;
-    TieuDe();
-    for(int i=0;i<n;i++)
+    if(n == 1)
     {
-        if(sv[i].DiemTB() == Min(sv, n) )
-        {
-            sv[i].Xuat();
-        }
+       addHead(a); return; 
+    }
+    else if(n==pos + 1)
+    {
+       addLast(a); return;
+    }
+    sv p = a;
+    for(int i=1; i< pos-1; i++)
+    {
+        p = p->next;
+    }
+    sv tmp = makeNode();
+    tmp ->next = p->next;
+    p->next = tmp;
+}
+//xoa sinh vien dau
+void deleteHead(sv &a)
+{
+    if(a==NULL) return;
+    a = a->next;
+}
+// xoa sinh vien cuoi
+void deleteLast(sv &a)
+{
+    if(a == NULL) return;
+    sv truoc = NULL, sau = a;
+    while(sau->next != NULL)
+    {
+        truoc = sau;
+        sau = sau->next;
+    }
+    if(truoc == NULL)
+    {
+        a = NULL;
+    }
+    else
+    {
+        truoc->next = NULL;
+    }
+}
+// xoa o giua
+void deleteMid(sv &a, int pos)
+{
+    if(pos <=0 ||  pos > Size(a)) 
+    {
+        cout <<"Vi tri xoa khong hop le!\n";
+        return;
+    }
+    sv truoc = NULL, sau = a;
+    for(int i = 1; i < pos; i++)
+    {
+        truoc = sau;
+        sau = sau->next;
+    }
+    if(truoc == NULL)
+    {
+	    a = a->next;
+    }
+    else
+    {
+        truoc->next = sau->next;
     }
 }
 
-//ham sap xep sinh vien theo ma sinh vien
-void SapXepMSSV(SV *sv, int n)
+void in(Student s)
 {
-    dem=0;
-    cout <<"Danh sach sinh vien theo ma so tang dan: "<<endl;
-    TieuDe();
-    for(int i=0;i<n-1;i++)
+    cout <<"-----------------\n";
+    cout<<"STT"<<setw(5)<<"ID"<<setw(18)<<"Ho va Ten"<<setw(18)<<"Diem Toan"<<setw(12)<<"Diem Ly"<<setw(12)<<"Diem Hoa"<<setw(12)<<"Diem gpa"<<endl;
+    cout<<++dem<<setw(6)<<s.id<<setw(18)<<s.name<<setw(18)<<s.diem1<<setw(12)<<s.diem2<<setw(12)<<s.diem3<<setw(12)<<s.gpa<<endl;
+	if(s.gpa>=3.6){
+		cout<<"Xep loai: Xuat sac!!!\n";
+	} else if(s.gpa>=3.2){
+		cout<<"Xep loai: Gioi!!!\n";
+	} else if(s.gpa>=2.5){
+		cout<<"Xep loai: Kha!!!\n";
+	} else if(s.gpa>=2){
+		cout<<"Xep loai: Trung binh!!!\n";
+	} else if(s.gpa>=1){
+		cout<<"Xep loai: Yeu!!!\n";
+	} else{
+		cout<<"Xep loai: Kem!!!\n";
+	}
+}
+void inds(sv a)
+{
+    cout <<"Danh sach sinh vien:\n";
+    while(a!=NULL)
     {
-        for(int j=i+1;j<n;j++)
-        {
-            if(sv[i].mssv > sv[j].mssv )
-            {
-                swap(sv[i], sv[j]);
-            }
-        }
+        in(a->s);
+        a = a -> next; 
     }
-    XuatSV(sv, n);
+    cout << "\n---------------------";
 }
-
-
-
-// ham nhap so luong sinh vien
-void NhapSL(int &n)
+void sapxep(sv &a)
 {
-    do
+    for(sv p = a ; p->next != NULL;p = p->next)
     {
-        cout <<"Nhap so luong sinh vien: ";
-        cin >>n;
-        if(n<0)
-            cout <<"Moi ban nhap lai!"<<endl;
-    }while(n<0);
-}
-
-// tim kiem sinh vien thong qua ma so sinh vien
-void TimKiem(SV *sv, int n)
-{
-    int ms,res=0;
-    cout <<"Nhap ma so cua sinh vien can tim kiem: ";
-    cin >>ms;
-    for(int i=0;i<n;i++)
-    {
-        if(sv[i].mssv == ms)
-        {
-            sv[i].Xuat();
-            res++;
-        }
+       sv min = p ;
+       for(sv q = p->next; q!=NULL; q = q->next){
+	        if(q->s.gpa < min->s.gpa){
+                min =  q;
+			}
+       }
+       Student tmp = min ->s;
+       min->s =p->s;
+       p->s = tmp;
     }
-    if(res == 0)
-        cout <<"Ma so sinh vien khong co trong danh sach!"<<endl;
 }
-
-// sap xep danh sach sinh vien theo abc
-void SapxepTen(SV *sv,int n)
-{
-	for(int i=0;i<n-1;i++)
-	{
-		for(int j=i+1;j<n;j++)
-		{
-		   if(strcmp(sv[i].ten,sv[j].ten)>0)
-		  {
-              swap(sv[i], sv[j]);
-		  }
-		}
-	} 
-    XuatSV(sv, n);
-}
-void Menu(){
-    cout<<"CHUONG TRINH QUAN LY SINH VIEN CUA NHOM 10"<<"\n";
-    cout<<"======================================================================"<<"\n";
-    cout<<"|                                MENU                                |"<<"\n";
-    cout<<"| 1. Nhap danh sach sinh vien                                        |"<<"\n";
-    cout<<"| 2. Hien thi danh sach sinh vien                                    |"<<"\n";
-    cout<<"| 3. Them thong tin 1 sinh vien                                      |"<<"\n";
-    cout<<"| 4. Xoa thong tin 1 sinh vien                                       |"<<"\n";
-    cout<<"| 5. Hien thi thong tin nhung sinh vien co diem trung binh cao nhat  |"<<"\n";
-    cout<<"| 6. Hien thi thong tin nhung sinh vien co diem trung binh thap nhat |"<<"\n"; 
-    cout<<"| 7. Tim sinh vien boi ma so sinh vien                               |"<<"\n"; 
-    cout<<"| 8. Sap xep danh sach sinh vien theo ma so sinh vien tang dan       |"<<"\n"; 
-    cout<<"| 9. Sap xep danh sach sinh vien theo ten alphabet                   |"<<"\n";
-    cout<<"| 0. Thoat                                                           |"<<endl;
-    cout<<"======================================================================"<<"\n";
-}
-
-void Press()
-{
-    system("pause");
+void pressAnyKey() {
+    cout <<"\nBam phim bat ky de tiep tuc...";
+    getch();
     system("cls");
 }
-
-
 int main()
 {
-    int n = 0;
-    char chon;
-    int luachon;
-    SV *sv;
-    sv = new SV[n];
-    do
+  sv head = NULL;
+  while(1)
+  {
+    cout <<"CHUONG TRINH QUAN LY SINH VIEN CUA NHOM 10"<<"\n";
+    cout <<"========================================="<<"\n";
+    cout <<"|                MENU                   |"<<"\n";
+    cout <<"| 1. Them sinh vien                     |"<<"\n";
+    cout <<"| 2. Chen sinh vien vao dau danh sach   |"<<"\n";
+    cout <<"| 3. Chen sinh vien vao cuoi danh sach  |"<<"\n";
+    cout <<"| 4. Chen sinh vien vao giua danh sach  |"<<"\n";
+    cout <<"| 5. Xoa sinh vien o dau danh sach      |"<<"\n";
+    cout <<"| 6. Xoa sinh vien o cuoi danh sach     |"<<"\n";
+    cout <<"| 7. Xoa sinh vien o giua danh sach     |"<<"\n";
+    cout <<"| 8. Duyet danh sach                    |"<<"\n";
+    cout <<"| 9. Sap xep cac sinh vien              |"<<"\n";
+    cout <<"| 0. Thoat                              |"<<"\n";
+    cout <<"========================================="<<"\n";
+    cout <<"Nhap lua chon: ";
+    int lc; cin >>lc;
+    if(lc == 1){
+    	cout<<"Them sinh vien\n ";
+    	addHead(head);
+    	pressAnyKey();
+		}
+	else if(lc == 2)
     {
-        Menu();
-        cout <<"Moi ban nhap lua chon: ";
-        cin >>luachon;
-        switch (luachon)
-        {
-            case 1:
-                NhapSL(n);
-                NhapSV(sv, n);
-                Press();
-                break;
-            case 2:
-                XuatSV(sv, n);
-                Press();
-                break;
-            case 3:
-                ThemSV(sv, n);
-                Press();
-                break;
-            case 4:
-                XoaSV(sv, n);
-                Press();
-                break;
-            case 5:
-                InMax(sv, n);
-                Press();
-                break;
-            case 6:
-                InMin(sv, n);
-                Press();
-                break;
-            case 7:
-                TimKiem(sv, n);
-                Press();
-                break;
-            case 8: 
-                SapXepMSSV(sv, n);
-                Press();
-                break;
-            case 9:
-                SapxepTen(sv, n);
-                Press();
-                break;
-        default:
-            cout <<"Ban da nhap sai lua chon!"<<endl;
-            Press();
-            break;
-        }
-        
-        cout <<"Ban co muon lua chon tiep khong(y/n): ";
-        cin >>chon;
-        if(chon == 'n')
-            cout <<"Tam biet ban\n";
-    } while (chon =='y'||chon == 'Y');
-    
-    delete[] sv;
-    return 0;
-}
+        addHead(head);
+        cout<<endl;
+        cout<<"DANH SACH SAU KHI CHEN LA: "<<endl;
+        inds(head);
+        pressAnyKey();
+    }
+    else if(lc == 3)
+    {
+        addLast(head);
+        cout<<endl;
+        cout<<"DANH SACH SAU KHI CHEN LA: "<<endl;
+        inds(head);
+        pressAnyKey();
+    }
+    else if(lc == 4)
+    {
+        int pos; cout<<"Nhap vi tri can chen: "; cin>> pos;
+	    addMid(head,pos);
+	    cout<<endl;
+        cout<<"DANH SACH SAU KHI CHEN LA: "<<endl;
+	    inds(head);
+        pressAnyKey();
+    }
+    else if(lc == 5)
+    {
+        deleteHead(head);
+        cout<<"Ban da xoa thanh cong!"<<endl;
+        cout<<endl;
+        pressAnyKey();
+    }
+    else if(lc == 6)
+    {
+    	deleteLast(head);
+        cout<<"Ban da xoa thanh cong!"<<endl;
+        cout<<endl;
+        pressAnyKey();
+    }
+    else if(lc == 7)
+    {
+        int pos; cout<<"Nhap vi tri can xoa:"; cin>>pos;
+        deleteMid(head,pos);
+        cout<<endl;
+        cout<<"DANH SACH SAU KHI XOA LA: "<<endl;
+        inds(head);
+        pressAnyKey();
+    }
+    else if(lc == 8)
+    {
+        inds(head);
+        pressAnyKey();
+    }
+    else if(lc == 9)
+    {
+        sapxep(head);
+        pressAnyKey();
+    }   
+    else if(lc == 0)
+    {
+        break;
+    }
+    }
+  return 0;
+}	         // CODE BY NHOM 10
