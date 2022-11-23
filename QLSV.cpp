@@ -1,16 +1,14 @@
 #include <bits/stdc++.h>
 #include<conio.h>
-int dem=0;
 using namespace std;
 
 struct Student
 {
-    string name, id;
+    string name, xeploai, id;
     double gpa;
     float diem1;
     float diem2;
     float diem3;
-    char xeploai;
 };
 struct SV // khai bao node
 {
@@ -24,42 +22,31 @@ sv makeNode()
 {
 	//luu id voi ten vao truoc, vi neu dua vo ham lap for thi se bi lap( neu TH toan ly hoa thoa dieu kien do-while)
     Student s;
-    cout <<"Nhap thong tin sinh vien: \n";
-    cout <<"Nhap ID: "; cin >> s.id;
-    cout <<"Nhap Ten: "; cin.ignore();
+    cout <<"NHAP THONG TIN SINH VIEN\n";
+    cout <<"Nhap MSSV: "; cin >> s.id;
+    cout <<"Nhap Ho Va Ten: "; cin.ignore();
     getline(cin, s.name);
-    cout<<"Nhan nut bat ki de tiep tuc hoan thanh thong tin sinh vien!"<<endl;
-    char h= getch();
-    system("cls");
     do{
-	system("cls");
-    cout <<"NHAP DIEM SINH VIEN\n";
-    cout <<"Nhap diem Toan (0-10): "; cin>>s.diem1;
-    cout <<"Nhap diem Ly (0-10): "; cin>>s.diem2;
-    cout <<"Nhap diem Hoa (0-10): "; cin>>s.diem3;
-    s.gpa=((s.diem1+s.diem2+s.diem3)/3)*4/10;
-	cout<<"Diem gpa:"<<s.gpa<<endl;
+        cout <<"Nhap diem Toan: "; cin>>s.diem1;
+        cout <<"Nhap diem Ly: "; cin>>s.diem2;
+        cout <<"Nhap diem Hoa: "; cin>>s.diem3;
+        if(s.diem1<0||s.diem2<0||s.diem3<0||s.diem1>10||s.diem2>10||s.diem3>10)
+            cout <<"Moi ban nhap lai!!!"<<endl;
 	}
 	while(s.diem1>10||s.diem2>10||s.diem3>10||s.diem1<0||s.diem2<0||s.diem3<0);
-	if(s.gpa>=3.6){
-		cout<<"Xep loai: Xuat sac!!!\n";
-		cout<<"Luu thong tin sinh vien thanh cong!!!"<<endl;
-	}else if(s.gpa >= 3.2){
-		cout<<"Xep loai: Gioi!!!\n";
-		cout<<"Luu thong tin sinh vien thanh cong!!!"<<endl;
-	} else if(s.gpa>=2.5){
-		cout<<"Xep loai: Kha!!!\n";
-		cout<<"Luu thong tin sinh vien thanh cong!!!"<<endl;
-	} else if(s.gpa>=2){
-		cout<<"Xep loai: Trung binh!!!\n";
-		cout<<"Luu thong tin sinh vien thanh cong!!!"<<endl;
-	}else if(s.gpa>=1){
-		cout<<"Xep loai: Yeu!!!\n";
-		cout<<"Luu thong tin sinh vien thanh cong!!!"<<endl;
-	}else{
-		cout<<"Xep loai: Kem!!!\n";
-		cout<<"Luu thong tin sinh vien thanh cong!!!"<<endl;
-	}
+	s.gpa=((s.diem1+s.diem2+s.diem3)/3)*4/10;
+	s.xeploai;
+	if(s.gpa>=3.6)
+            s.xeploai = "Xuat sac";
+        else if(s.gpa>=3.2)
+            s.xeploai = "Gioi";
+        else if(s.gpa>=2.5)
+            s.xeploai = "Kha";
+        else if(s.gpa>=2)
+            s.xeploai = "Trung binh";
+        else if(s.gpa>=1)
+            s.xeploai = "Yeu";
+        else s.xeploai = "Kem";
     sv tmp = new SV();
     tmp -> s = s;
     tmp -> next = NULL;
@@ -85,16 +72,16 @@ int Size(sv a)
 // them mot sinh vien vao dau danh sach lien ket
 void addHead(sv &a) //dung tham chieu de thay doi gia tri cua node dau tien khi addHead thay doi
 {
-   sv tmp = makeNode();
-   if(a== NULL)
-   {
+    sv tmp = makeNode();
+    if(a== NULL)
+    {
     a=tmp;
-   }
-   else
-   {
+    }
+    else
+    {
     tmp->next = a;// theo thu tu, neu lam nguoc lai thi se mat lien ket voi cac sinh vien dung sau trong list
     a= tmp;
-   }
+    }
 }
 //them sinh vien vao cuoi 
 void addLast(sv &a)
@@ -118,17 +105,20 @@ void addLast(sv &a)
 void addMid(sv &a, int pos)
 {
     int n = Size(a);
-    if(pos<=0 || pos > pos + 1)
+    if(pos<=0 || pos > n + 1)
     {
-        cout <<"Vi tri chen khong hop le! \n";
+        cout <<"Vi tri chen khong hop le!\n";
+        return;
     }
-    if(n == 1)
+    if(pos == 1)
     {
-       addHead(a); return; 
+       addHead(a);
+	   return; 
     }
     else if(n==pos + 1)
     {
-       addLast(a); return;
+       addLast(a);
+	   return;
     }
     sv p = a;
     for(int i=1; i< pos-1; i++)
@@ -187,35 +177,22 @@ void deleteMid(sv &a, int pos)
         truoc->next = sau->next;
     }
 }
-
 void in(Student s)
 {
-    cout <<"-----------------\n";
-    cout<<"STT"<<setw(5)<<"ID"<<setw(18)<<"Ho va Ten"<<setw(18)<<"Diem Toan"<<setw(12)<<"Diem Ly"<<setw(12)<<"Diem Hoa"<<setw(12)<<"Diem gpa"<<endl;
-    cout<<++dem<<setw(6)<<s.id<<setw(18)<<s.name<<setw(18)<<s.diem1<<setw(12)<<s.diem2<<setw(12)<<s.diem3<<setw(12)<<s.gpa<<endl;
-	if(s.gpa>=3.6){
-		cout<<"Xep loai: Xuat sac!!!\n";
-	} else if(s.gpa>=3.2){
-		cout<<"Xep loai: Gioi!!!\n";
-	} else if(s.gpa>=2.5){
-		cout<<"Xep loai: Kha!!!\n";
-	} else if(s.gpa>=2){
-		cout<<"Xep loai: Trung binh!!!\n";
-	} else if(s.gpa>=1){
-		cout<<"Xep loai: Yeu!!!\n";
-	} else{
-		cout<<"Xep loai: Kem!!!\n";
-	}
+	cout <<"------------------------------------------------------------------------------------\n";
+    cout<<"MSSV"<<setw(20)<<"Ho Va Ten"<<setw(12)<<"Diem Toan"<<setw(12)<<"Diem Ly"<<setw(12)<<"Diem Hoa"<<setw(12)<<"Diem GPA"<<setw(12)<<"Xep loai"<<endl;
+    cout<<s.id<<setw(20)<<s.name<<setw(12)<<s.diem1<<setw(12)<<s.diem2<<setw(12)<<s.diem3<<setw(12)<<s.gpa<<setw(12)<<s.xeploai<<endl;
 }
 void inds(sv a)
 {
-    cout <<"Danh sach sinh vien:\n";
+	int dem = 0;
+    cout <<"DANH SACH SINH VIEN\n";
     while(a!=NULL)
     {
         in(a->s);
-        a = a -> next; 
+        a = a -> next;
     }
-    cout << "\n---------------------";
+    cout <<"------------------------------------------------------------------------------------\n";
 }
 void sapxep(sv &a)
 {
@@ -320,7 +297,7 @@ int main()
     {
         sapxep(head);
         pressAnyKey();
-    }   
+    }
     else if(lc == 0)
     {
         break;
