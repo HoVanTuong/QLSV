@@ -52,11 +52,6 @@ sv makeNode()
     tmp -> next = NULL;
     return tmp;
 }
-// kiem tra rong
-bool empty(sv a)
-{
-    return a == NULL;
-}
 // kiem tra danh sach co bao nhieu phan tu
 int Size(sv a)
 {
